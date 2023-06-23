@@ -647,7 +647,7 @@ public abstract class Controller<T extends Controller<T>> extends MultiTileBasic
     }
 
     @Override
-    public void onTick(long timer, boolean isServerSide) {
+    public void onTick(long tick, boolean isServerSide) {
         if (!tickCovers()) {
             return;
         }
