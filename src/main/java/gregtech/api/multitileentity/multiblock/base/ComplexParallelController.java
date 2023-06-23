@@ -17,7 +17,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 import gregtech.api.enums.GT_Values;
 import gregtech.api.logic.ComplexParallelProcessingLogic;
-import gregtech.api.logic.interfaces.PollutionLogicHost;
 import gregtech.api.util.GT_Utility;
 import gregtech.api.util.GT_Waila;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -107,9 +106,6 @@ public abstract class ComplexParallelController<T extends ComplexParallelControl
             issueClientUpdate();
         }
 
-        if (this instanceof PollutionLogicHost && tick % POLLUTION_TICK == 0) {
-            doPollution();
-        }
         emitEnergy();
     }
 

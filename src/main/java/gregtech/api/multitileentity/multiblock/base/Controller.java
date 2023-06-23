@@ -804,22 +804,6 @@ public abstract class Controller<T extends Controller<T>> extends MultiTileBasic
         this.limits = mLimits;
     }
 
-    // IMachineProgress
-    @Override
-    public long getProgress() {
-        return progressTime;
-    }
-
-    @Override
-    public long getMaxProgress() {
-        return maxProgressTime;
-    }
-
-    @Override
-    public boolean increaseProgress(int aProgressAmountInTicks) {
-        return increaseProgressGetOverflow(aProgressAmountInTicks) != aProgressAmountInTicks;
-    }
-
     @Override
     public FluidStack getDrainableFluid(ForgeDirection side) {
         return getDrainableFluid(side, null);
@@ -831,18 +815,6 @@ public abstract class Controller<T extends Controller<T>> extends MultiTileBasic
             side,
             fluidToDrain == null ? null : new FluidStack(fluidToDrain, 0));
         return tank == null ? null : tank.getFluid();
-    }
-
-    /**
-     * Increases the Progress, returns the overflown Progress.
-     */
-    public int increaseProgressGetOverflow(int aProgress) {
-        return 0;
-    }
-
-    @Override
-    public boolean hasThingsToDo() {
-        return getMaxProgress() > 0;
     }
 
     public boolean isSeparateInputs() {

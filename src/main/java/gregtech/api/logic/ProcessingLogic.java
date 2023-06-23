@@ -18,7 +18,7 @@ public abstract class ProcessingLogic {
     protected long voltage;
     protected long ampere;
     protected long eut;
-    protected long duration;
+    protected int duration;
     protected boolean isCleanroom, voidProtection, perfectOverclock;
     protected Controller<?> controller;
     protected int maxParallel = 1;
@@ -65,7 +65,7 @@ public abstract class ProcessingLogic {
         return this;
     }
 
-    public ProcessingLogic setDuration(long duration) {
+    public ProcessingLogic setDuration(int duration) {
         this.duration = duration;
         return this;
     }
@@ -132,7 +132,7 @@ public abstract class ProcessingLogic {
         return outputFluids;
     }
 
-    public long getDuration() {
+    public int getDuration() {
         return duration;
     }
 

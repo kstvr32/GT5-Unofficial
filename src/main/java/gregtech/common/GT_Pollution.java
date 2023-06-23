@@ -41,6 +41,7 @@ import gregtech.api.enums.GT_Values;
 import gregtech.api.interfaces.metatileentity.IMachineCallback;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
+import gregtech.api.interfaces.tileentity.IHasWorldObjectAndCoords;
 import gregtech.api.net.GT_Packet_Pollution;
 import gregtech.api.util.GT_ChunkAssociatedData;
 import gregtech.api.util.GT_Utility;
@@ -319,13 +320,17 @@ public class GT_Pollution {
             }
         }
 
-        mutatePollution(te.getWorld(), te.getXCoord() >> 4, te.getZCoord() >> 4, d -> d.changeAmount(aPollution), null);
+        addPollution(te.getWorld(), te.getXCoord() >> 4, te.getZCoord() >> 4, aPollution);
+    }
+
+    /** @see #addPollution(World, int, int, int) */
+    public static void addPollution(IHasWorldObjectAndCoords te, int aPollution) {
+        addPollution(te.getWorld(), te.getXCoord() >> 4, te.getZCoord() >> 4, aPollution);
     }
 
     /** @see #addPollution(World, int, int, int) */
     public static void addPollution(Chunk ch, int aPollution) {
-        if (!GT_Mod.gregtechproxy.mPollution || aPollution == 0 || ch.worldObj.isRemote) return;
-        mutatePollution(ch.worldObj, ch.xPosition, ch.zPosition, d -> d.changeAmount(aPollution), null);
+        addPollution(ch.worldObj, ch.xPosition, ch.zPosition, aPollution);
     }
 
     /**
