@@ -1,10 +1,20 @@
 package gregtech.common.tileentities.casings.upgrade;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import com.gtnewhorizons.modularui.api.drawable.IDrawable;
+import com.gtnewhorizons.modularui.api.drawable.UITexture;
+import com.gtnewhorizons.modularui.api.math.Alignment;
+import com.gtnewhorizons.modularui.api.math.Color;
+import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
+import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
+import gregtech.api.gui.modularui.GT_UITextures;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.gtnewhorizons.modularui.api.screen.ModularWindow.Builder;
@@ -25,7 +35,7 @@ public class Inventory extends UpgradeCasing {
 
     private String inventoryName = "inventory";
     private int inventorySize;
-    private int type = BOTH;
+    private int type = INPUT;
 
     public String getCustomInventoryName() {
         return inventoryName;
@@ -98,6 +108,11 @@ public class Inventory extends UpgradeCasing {
     }
 
     @Override
+    public String getLocalName() {
+        return "Inventory Upgrade";
+    }
+
+    @Override
     public void addUIWidgets(Builder builder, UIBuildContext buildContext) {
         builder.widget(
             new TextFieldWidget().setGetter(() -> inventoryName)
@@ -108,8 +123,49 @@ public class Inventory extends UpgradeCasing {
                         controller.changeInventoryName(inventoryName, inventoryID.toString(), type);
                     }
                 })
-                .setSize(100, 25)
-                .setPos(50, 30));
+                .setTextColor(Color.WHITE.normal)
+                .setTextAlignment(Alignment.CenterLeft)
+                .setBackground(GT_UITextures.BACKGROUND_TEXT_FIELD)
+                .addTooltip("Name")
+                .setSize(100, 18)
+                .setPos(25, 25));
+        builder.widget(
+            new ButtonWidget().setPlayClickSound(true)
+                .setOnClick(
+                    (clickData, widget) -> {
+                        setInventoryMode(type == INPUT ? OUTPUT : INPUT);
+                        widget.notifyTooltipChange();
+                    })
+                .setBackground(() -> {
+                    List<UITexture> ret = new ArrayList<>();
+                    if (type == INPUT) {
+                        ret.add(GT_UITextures.BUTTON_STANDARD);
+
+                    } else {
+                        ret.add(GT_UITextures.BUTTON_STANDARD_PRESSED);
+                    }
+                    return ret.toArray(new IDrawable[0]);
+                })
+                .setSize(18, 18)
+                .dynamicTooltip(() ->
+                    Arrays.asList(
+                        "Toggle Inventory Mode",
+                        (type == INPUT ? "Input Mode" : "Output Mode")))
+                .attachSyncer(new FakeSyncWidget.IntegerSyncer(() -> type, val -> {
+                    setInventoryMode(val);
+                }), builder)
+                .setPos(140, 25));
+    }
+
+    private void setInventoryMode(int newType){
+        int oldType = type;
+        type = newType;
+
+        final IMultiBlockController controller = getTarget(false);
+        if (controller != null) {
+            controller.unregisterInventory(inventoryName, inventoryID.toString(), oldType);
+            controller.registerInventory(inventoryName, inventoryID.toString(), inventorySize, type);
+        }
     }
 
     @Override
